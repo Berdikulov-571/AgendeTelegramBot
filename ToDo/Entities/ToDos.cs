@@ -8,5 +8,6 @@ namespace ToDo.Entities
         public int ToDoId { get; set; }
         public string Description { get; set; }
         public DateTime Date { get; set; }
+        public long UserId { get; set; }
     }
 }
