@@ -1,21 +1,29 @@
-﻿using Telegram.Bot;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Telegram.Bot;
 using Telegram.Bot.Args;
+using ToDo.Entities;
 using ToDo.Services;
-
 namespace ToDo
 {
     internal class Program
     {
         public static ITelegramBotClient? botClient;
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
-            botClient = new TelegramBotClient("6534651577:AAH84sVjRAYA6lEqyF45NjbbhiAvGLyxu80");
+
+            botClient = new TelegramBotClient("6612552105:AAE8qzJe7w_V7bGQjLyB1aVvxgJYpuucddY");
 
             botClient.OnMessage += Bot_OnMessage;
 
             botClient.StartReceiving();
 
-            Console.ReadLine();
+            await new HostBuilder()
+            .ConfigureServices((hostContext, services) =>
+            {
+                // Register your background service
+                services.AddHostedService<BackGroundServiceTest>();
+            }).RunConsoleAsync();
         }
 
         private static async void Bot_OnMessage(object? sender, MessageEventArgs e)
@@ -31,8 +39,53 @@ namespace ToDo
                     firstName = e.Message.Chat.FirstName,
                     UserId = e.Message.Chat.Id
                 });
+            }
+            else if (text.Contains("/new="))
+            {
+                string description = text.Split('=')[1];
+
+                await ToDoService.AddAsync(description, e.Message.Chat.Id);
+
+                await botClient.SendTextMessageAsync(e.Message.Chat.Id, "ToDo qo'shildi",replyToMessageId:e.Message.MessageId);
 
             }
+            else if (text == "/active")
+            {
+                IEnumerable<ToDos> todos = await ToDoService.GetAllAsync();
+
+                foreach (var i in todos)
+                {
+                    try
+                    {
+                        await botClient.SendTextMessageAsync(i.UserId, i.Description);
+                    }
+                    catch 
+                    {
+
+                    }
+                }
+            }
+            else if (text == "/archive")
+            {
+                IEnumerable<ToDos> todos = await ToDoService.Archive();
+
+                foreach (var i in todos)
+                {
+                    try
+                    {
+                        await botClient.SendTextMessageAsync(i.UserId, i.Description);
+                    }
+                    catch
+                    {
+
+                    }
+                }
+            }
+            else
+            {
+                await botClient.SendTextMessageAsync(e.Message.Chat.Id, "Yangi ToDo qo'shish uchun /new=");
+            }
+
         }
     }
 }
