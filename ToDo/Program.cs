@@ -12,7 +12,7 @@ namespace ToDo
         static async Task Main(string[] args)
         {
 
-            botClient = new TelegramBotClient("6612552105:AAE8qzJe7w_V7bGQjLyB1aVvxgJYpuucddY");
+            botClient = new TelegramBotClient("");
 
             botClient.OnMessage += Bot_OnMessage;
 
