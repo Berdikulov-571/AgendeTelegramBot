@@ -10,7 +10,7 @@ namespace ToDo.Services
 
         public BackGroundServiceTest()
         {
-            _botClient = new TelegramBotClient("6612552105:AAE8qzJe7w_V7bGQjLyB1aVvxgJYpuucddY");
+            _botClient = new TelegramBotClient("");
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
