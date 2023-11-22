@@ -19,7 +19,7 @@ namespace ToDo.Services
 
             while (!stoppingToken.IsCancellationRequested)
             {
-                if (DateTime.Now.Second == 01)
+                if (DateTime.Now.Hour == 08 || DateTime.Now.Hour == 12 || DateTime.Now.Hour == 18)
                 {
                     IEnumerable<ToDos> todos = await ToDoService.GetAllAsync();
 
