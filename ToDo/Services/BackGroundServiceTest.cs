@@ -10,7 +10,7 @@ namespace ToDo.Services
 
         public BackGroundServiceTest()
         {
-            _botClient = new TelegramBotClient("");
+            _botClient = new TelegramBotClient("6460289604:AAGy7LaNxSy6iL-6cZt3aJLeAeOp9rIYRP8");
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -19,7 +19,7 @@ namespace ToDo.Services
 
             while (!stoppingToken.IsCancellationRequested)
             {
-                if (DateTime.Now.Hour == 08 || DateTime.Now.Hour == 12 || DateTime.Now.Hour == 18)
+                if (DateTime.Now.Hour == 8 && DateTime.Now.Minute == 00 && DateTime.Now.Second == 0 || DateTime.Now.Hour == 12 && DateTime.Now.Minute == 00 && DateTime.Now.Second == 0 || DateTime.Now.Hour == 18 && DateTime.Now.Minute == 00 && DateTime.Now.Second == 0)
                 {
                     IEnumerable<ToDos> todos = await ToDoService.GetAllAsync();
 
@@ -42,3 +42,4 @@ namespace ToDo.Services
         }
     }
 }
+

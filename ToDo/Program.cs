@@ -4,6 +4,7 @@ using Telegram.Bot;
 using Telegram.Bot.Args;
 using ToDo.Entities;
 using ToDo.Services;
+
 namespace ToDo
 {
     internal class Program
@@ -12,7 +13,7 @@ namespace ToDo
         static async Task Main(string[] args)
         {
 
-            botClient = new TelegramBotClient("");
+            botClient = new TelegramBotClient("6460289604:AAGy7LaNxSy6iL-6cZt3aJLeAeOp9rIYRP8");
 
             botClient.OnMessage += Bot_OnMessage;
 
@@ -24,6 +25,9 @@ namespace ToDo
                 // Register your background service
                 services.AddHostedService<BackGroundServiceTest>();
             }).RunConsoleAsync();
+
+            Console.ReadLine();
+
         }
 
         private static async void Bot_OnMessage(object? sender, MessageEventArgs e)
@@ -53,33 +57,49 @@ namespace ToDo
             {
                 IEnumerable<ToDos> todos = await ToDoService.GetAllAsync();
 
-                foreach (var i in todos)
+                if(todos.Count() != 0)
                 {
-                    try
+                    foreach (var i in todos)
                     {
-                        await botClient.SendTextMessageAsync(i.UserId, i.Description);
-                    }
-                    catch 
-                    {
+                        try
+                        {
+                            await botClient.SendTextMessageAsync(i.UserId, i.Description);
+                        }
+                        catch 
+                        {
 
+                        }
                     }
                 }
+                else
+                {
+                    await botClient.SendTextMessageAsync(e.Message.Chat.Id, "Sizda hali ToDo mavjud emas", replyToMessageId: e.Message.MessageId);
+                }
+
             }
             else if (text == "/archive")
             {
                 IEnumerable<ToDos> todos = await ToDoService.Archive();
 
-                foreach (var i in todos)
+                if(todos.Count() != 0)
                 {
-                    try
+                    foreach (var i in todos)
                     {
-                        await botClient.SendTextMessageAsync(i.UserId, i.Description);
-                    }
-                    catch
-                    {
+                        try
+                        {
+                            await botClient.SendTextMessageAsync(i.UserId, i.Description);
+                        }
+                        catch
+                        {
 
+                        }
                     }
                 }
+                else
+                {
+                    await botClient.SendTextMessageAsync(e.Message.Chat.Id, "Hali archive mavjud emas", replyToMessageId: e.Message.MessageId);
+                }
+
             }
             else
             {
